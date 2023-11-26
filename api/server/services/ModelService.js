@@ -14,6 +14,17 @@ const modelsCache = isEnabled(process.env.USE_REDIS)
 const { OPENROUTER_API_KEY, OPENAI_REVERSE_PROXY, CHATGPT_MODELS, ANTHROPIC_MODELS, PROXY } =
   process.env ?? {};
 
+const processModelEnvVar = (modelString = null) => {
+    let models = String(opts.models).split(',').map(model => {
+        let [modelIdentifier, modelName] = model.split('=');
+        return {
+            identifier: model,
+            name: modelName ?? model,
+        }
+    })
+    return [models.map(model => model.identifier), models];
+}
+
 const fetchOpenAIModels = async (opts = { azure: false, plugins: false }, _models = []) => {
   let models = _models.slice() ?? [];
   let apiKey = openAIApiKey;
